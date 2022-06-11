@@ -7,7 +7,7 @@
 #include "schedule.hpp"
 int main() {
     auto* test = new BBallLeague::league();
-    auto* round = test->getRound(0);
+    auto* round = test->getRound(1);
     std::cout << "test";
     return 0;
 }

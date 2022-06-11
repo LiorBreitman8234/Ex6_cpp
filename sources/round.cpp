@@ -11,4 +11,12 @@ namespace BBallLeague{
         std::cout << "added game between: " << game->getHome()->getName() << " and " << game->getAway()->getName() << std::endl;
         return true;
     }
+
+    std::ostream &operator<<(std::ostream &os, const round &round) {
+        for(auto game:round.games)
+        {
+            os << (*game) << std::endl;
+        }
+        return os;
+    }
 }

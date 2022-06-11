@@ -16,9 +16,10 @@ namespace BBallLeague{
         std::pair<int,int> record;
         std::vector<game*> schedule;
     public:
-        team(std::string name);
-        void setId(int id){this->id = id;};
+        explicit team(std::string name);
+        void setId(int getID){this->id = getID;};
         bool checkGameExists(game& game);
+        int getId() const{return this->id;};
         std::string getName(){return this->name;};
         void addGame(game* game){this->schedule.push_back(game);};
     };
