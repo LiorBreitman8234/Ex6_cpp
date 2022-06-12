@@ -2,96 +2,135 @@
 #include "schedule.hpp"
 
 namespace BBallLeague {
-    schedule::schedule(const std::vector<team *>& teams) {
-        std::vector<game*> allGames;
+    bool checkChosen(const std::vector<int>& chosen)
+    {
+        for(auto i : chosen){
+            if(i == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    int getFirst(const std::vector<int>& chosen)
+    {
+        for(int i = 0; i < chosen.size();i++)
+        {
+            if(chosen.at((size_t)i) == 0)
+            {
+                return i+1;
+            }
+        }
+        return -1;
+    }
+    schedule::schedule(const std::vector<team *> &teams) {
+        std::vector<game *> allGames;
         for (int i = 0; i < 2 * (teams.size() - 1); i++) {
             this->rounds.push_back(new round());
         }
-        for(auto first:teams){
-            for(auto second:teams)
-            {
-                if(first->getId() == second->getId())
-                {
+        for (auto *first: teams) {
+            for (auto *second: teams) {
+                if (first->getId() == second->getId()) {
                     continue;
                 }
                 bool exists = false;
-                for(auto game:allGames)
-                {
-                    if(game->getAway()->getName() == second->getName() and game->getHome()->getName() == first->getName())
-                    {
+                for (auto *game: allGames) {
+                    if (game->getAway()->getName() == second->getName() and
+                        game->getHome()->getName() == first->getName()) {
                         exists = true;
                         break;
                     }
                 }
-                if(!exists)
-                {
-                    game* newGame = new game(first,second);
-                    allGames.push_back(newGame);
+                if (!exists) {
+                    game * newGame = new game(first, second);
+                    first->addGame(newGame);
+                    second->addGame(newGame);
                 }
             }
         }
-        for(auto curr:rounds)
+        int counter = 1;
+        for(auto* curr:rounds)
         {
+            curr->setNum(counter++);
             std::vector<int> chosen(teams.size(),0);
-            bool flag = false;
-            while(curr->getGames().size() < teams.size()/2)
+            while(!checkChosen(chosen))
             {
-                for(int i = 0; i < chosen.size();i++)
+                int firstID = getFirst(chosen);
+                team* team = teams.at(0);
+                for(auto* check:teams)
                 {
-//                    if(!flag)
-//                    {
-//                        flag = true;
-//                        std::cout << "[";
-//                        for(int index:chosen)
-//                        {
-//                            std::cout << index <<", ";
-//                        }
-//                        std::cout << "]" << std::endl;
-//                    }
-                    if(chosen.at((size_t)i) == 0)
+                    if(check->getId() == firstID)
                     {
-                        int idFirst = i+1;
-                        for(int j = 0; j < allGames.size();j++)
+                        team = check;
+                        break;
+                    }
+                }
+                std::vector<game*> games =team->getGames();
+                for(int i = 0; i < games.size() ;i++)
+                {
+                    game* game = team->getGames().at((size_t)i);
+                    if(game->getHome()->getId() == firstID)
+                    {
+                        auto secondID = (size_t)(game->getAway()->getId()-1);
+                        if(chosen.at(secondID) == 0)
                         {
-                            game* game = allGames.at((size_t)j);
-                            if(game->getHome()->getId() == idFirst)
-                            {
-                                if(chosen.at((size_t)game->getAway()->getId()-1) == 0)
-                                {
-                                    chosen.at((size_t)(idFirst-1)) = 1;
-                                    chosen.at((size_t)(game->getAway()->getId()-1)) = 1;
-                                    curr->addGame(game);
-                                    allGames.erase(allGames.begin()+j);
-                                    std::cout << "games left to set: " << allGames.size() << std::endl;
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            if(game->getAway()->getId() == idFirst)
-                            {
-                                if(chosen.at((size_t)game->getHome()->getId()-1) == 0)
-                                {
-                                    chosen.at((size_t)(idFirst-1)) = 1;
-                                    chosen.at((size_t)(game->getHome()->getId()-1)) = 1;
-                                    curr->addGame(game);
-                                    allGames.erase(allGames.begin()+j);
-                                    std::cout << "games left to set: " << allGames.size() << std::endl;
-                                    flag = false;
-                                    break;
-                                }
-                            }
+                            curr->addGame(game);
+                            chosen.at(secondID) = 1;
+                            chosen.at((size_t)firstID-1) = 1;
+                            team->eraseGame(game);
+                            game->getAway()->eraseGame(game);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        auto secondID = (size_t)(game->getHome()->getId()-1);
+                        if(chosen.at(secondID) == 0)
+                        {
+                            curr->addGame(game);
+                            chosen.at(secondID) = 1;
+                            chosen.at((size_t)firstID-1) = 1;
+                            team->eraseGame(game);
+                            game->getHome()->eraseGame(game);
+                            break;
                         }
                     }
                 }
             }
-            std::cout << (*curr) << std::endl;
         }
-        for(auto curr:rounds){
-            for(auto game:curr->getGames())
+        for(auto* team:teams)
+        {
+            team->clearGame();
+        }
+        for(auto* curr:rounds)
+        {
+            for(auto* game:curr->getGames())
             {
-                game->getHome()->addGame(game);
                 game->getAway()->addGame(game);
+                game->getHome()->addGame(game);
             }
         }
+        checkValid((int)teams.size());
+    }
+
+    bool schedule::checkValid(int teamsNum) {
+        for(auto* curr:rounds)
+        {
+            std::vector<int> check((size_t)teamsNum,0);
+            for(auto* game: curr->getGames())
+            {
+                if(check.at((size_t)(game->getHome()->getId()-1)) == 0 and check.at((size_t)(game->getAway()->getId()-1)) == 0)
+                {
+                    check.at((size_t)(game->getHome()->getId()-1)) = 1;
+                    check.at((size_t)(game->getAway()->getId()-1)) = 1;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            std::cout <<"round: " << curr->getNum() << " is valid!"<< std::endl;
+        }
+        return true;
     }
 }

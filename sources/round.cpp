@@ -2,18 +2,16 @@
 namespace BBallLeague{
 
     bool round::addGame(game* game) {
-        bool check = game->getHome()->checkGameExists(*game);
-        if(check)
-        {
-            return false;
-        }
         this->games.push_back(game);
-        std::cout << "added game between: " << game->getHome()->getName() << " and " << game->getAway()->getName() << std::endl;
+        game->getHome()->addGame(game);
+        game->getAway()->addGame(game);
+        //std::cout << "added game between: " << game->getHome()->getName() << " and " << game->getAway()->getName() << std::endl;
         return true;
     }
 
     std::ostream &operator<<(std::ostream &os, const round &round) {
-        for(auto game:round.games)
+        os << "Round Number: " << round.numRound << std::endl;
+        for(auto* game:round.games)
         {
             os << (*game) << std::endl;
         }
