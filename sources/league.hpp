@@ -17,7 +17,6 @@ namespace BBallLeague{
         round* currentRound;
         schedule* leagueGames;
         std::vector<team*> table;
-        std::mt19937 mt19937;
         void addTeams();
     public:
         explicit league(const std::vector<team*>& teams);

@@ -20,7 +20,7 @@ namespace BBallLeague{
         std::pair<int,int> score;
     public:
         game(team* home, team* away);
-        void PlayGame(std::mt19937 gen);
+        void PlayGame();
         team* getHome();
         team* getAway();
         std::string getWinner();

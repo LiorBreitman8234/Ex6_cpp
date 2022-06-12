@@ -19,6 +19,7 @@ namespace BBallLeague{
         std::vector<game*> schedule;
     public:
         explicit team(std::string name);
+        team(std::string name, double talent);
         double getTalent() const{return this->talent;};
         void setId(int getID){this->id = getID;};
         void updateStreak(char sign);

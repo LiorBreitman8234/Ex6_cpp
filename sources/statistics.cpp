@@ -25,7 +25,7 @@ namespace BBallLeague{
         {
             throw std::invalid_argument("num bigger then amount of teams");
         }
-        if(statistic == "record")
+        else if(statistic == "record")
         {
             std::vector<team*> sorted =this->sortRecord();
             for(size_t i =0; i < num;i++)
@@ -33,7 +33,7 @@ namespace BBallLeague{
                 std::cout << sorted.at(i)->getName() << " record: " << sorted.at(i)->getScore().first <<"W - " << sorted.at(i)->getScore().second <<"L "<<std::endl;
             }
         }
-        if(statistic == "diff")
+        else if(statistic == "diff")
         {
             std::vector<std::pair<team*,int>> sorted = this->sortDiff();
             for(size_t i = 0; i < num;i++)

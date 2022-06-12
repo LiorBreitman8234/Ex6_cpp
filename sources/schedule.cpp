@@ -110,7 +110,9 @@ namespace BBallLeague {
                 game->getHome()->addGame(game);
             }
         }
-        checkValid((int)teams.size());
+        if(checkValid((int)teams.size())){
+            std::cout << "schedule is valid!" << std::endl;
+        }
     }
 
     bool schedule::checkValid(int teamsNum) {
@@ -129,7 +131,6 @@ namespace BBallLeague {
                     return false;
                 }
             }
-            std::cout <<"round: " << curr->getNum() << " is valid!"<< std::endl;
         }
         return true;
     }

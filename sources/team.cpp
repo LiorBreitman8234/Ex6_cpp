@@ -9,7 +9,7 @@ namespace BBallLeague{
         std::normal_distribution<> distribution{TALENTMEAN,TALENTSTD};
         this->name = std::move(name);
         this->talent = distribution(gen);
-        while(talent <= 0 or talent >= 1){
+        while(talent <= 0 or talent > 1){
             this->talent = distribution(gen);
         }
         this->currentStreak = std::pair<int,char>(0,'W');
@@ -66,6 +66,19 @@ namespace BBallLeague{
         toPrint+= "streak: " + std::to_string(team.currentStreak.first) + team.currentStreak.second;
         os << toPrint;
         return os;
+    }
+
+    team::team(std::string name, double talent) {
+        if(talent <= 0 or talent > 1)
+        {
+            throw std::invalid_argument("talent not in range");
+        }
+        this->id = 0;
+        this->name = std::move(name);
+        this->talent = talent;
+        this->currentStreak = std::pair<int,char>(0,'W');
+        this->record = std::pair<int,int>(0,0);
+        this->schedule = std::vector<game*>();
     }
 
 }

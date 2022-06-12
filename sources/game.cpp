@@ -34,7 +34,9 @@ namespace BBallLeague{
         return os;
     }
 
-    void game::PlayGame(std::mt19937 gen) {
+    void game::PlayGame() {
+        std::random_device rd;
+        std::mt19937 gen{rd()};
         std::normal_distribution<> homeP{mean,std};
         std::normal_distribution<> awayP{mean,std};
         int homeS = (int)std::round(homeP(gen));

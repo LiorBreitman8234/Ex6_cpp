@@ -11,15 +11,16 @@ namespace BBallLeague{
         {
             for(auto* second:teams)
             {
+                if(first == second)
+                {
+                    continue;
+                }
                 if(first->getName() == second->getName())
                 {
                     throw std::invalid_argument("2 teams with the same name");
                 }
             }
         }
-        std::random_device rd{};
-        std::mt19937 gen{rd()};
-        this->mt19937 = gen;
         this->currentRoundNum = 0;
         int counter = 1;
         for(auto* team: teams)
@@ -38,9 +39,6 @@ namespace BBallLeague{
     }
 
     league::league() {
-        std::random_device rd{};
-        std::mt19937 gen{rd()};
-        this->mt19937 = gen;
         this->currentRoundNum = 0;
         addTeams();
         int counter = 1;
@@ -83,9 +81,9 @@ namespace BBallLeague{
         this->currentRound = curr;
         for(auto* currGame:curr->getGames())
         {
-            currGame->PlayGame(this->mt19937);
+            currGame->PlayGame();
         }
-        std::cout << (*curr) << std::endl;
+        //std::cout << (*curr) << std::endl;
     }
 
     void league::printLastRound() {
