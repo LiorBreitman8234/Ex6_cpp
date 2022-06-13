@@ -6,6 +6,7 @@
 namespace BBallLeague{
     class round;
     class schedule{
+        //this class hold all the round in the league
         std::vector<round*> rounds;
     public:
         explicit schedule(const std::vector<team*>& teams);

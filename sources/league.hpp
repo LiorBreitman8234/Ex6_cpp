@@ -13,8 +13,8 @@
 namespace BBallLeague{
     constexpr int numTeams = 20;
     class league{
+        // this class holds the whole league structure
         int currentRoundNum{};
-        round* currentRound;
         schedule* leagueGames;
         std::vector<team*> table;
         void addTeams();

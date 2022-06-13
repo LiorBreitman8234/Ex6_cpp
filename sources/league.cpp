@@ -3,11 +3,12 @@
 
 namespace BBallLeague{
     BBallLeague::league::league(const std::vector<team *>& teams) {
-        if(teams.size() > numTeams)
+
+        if(teams.size() > numTeams)//checking amount of teams
         {
             throw std::invalid_argument("too many teams");
         }
-        for(auto* first:teams)
+        for(auto* first:teams)//checking duplicated teams
         {
             for(auto* second:teams)
             {
@@ -23,34 +24,34 @@ namespace BBallLeague{
         }
         this->currentRoundNum = 0;
         int counter = 1;
-        for(auto* team: teams)
+        for(auto* team: teams)//adding teams to table
         {
             table.push_back(team);
         }
-        if(this->table.size() < numTeams){
+        if(this->table.size() < numTeams)//adding extra teams if needed
+        {
             addTeams();
         }
-        for(auto* team: this->table)
+        for(auto* team: this->table)//setting ids
         {
             team->setId(counter++);
         }
-        this->leagueGames = new schedule(this->table);
-        this->currentRound = nullptr;
+        this->leagueGames = new schedule(this->table);//setting schedule
     }
 
     league::league() {
         this->currentRoundNum = 0;
-        addTeams();
+        addTeams();//adding teams
         int counter = 1;
-        for(auto* team: this->table)
+        for(auto* team: this->table)//setting ids
         {
             team->setId(counter++);
         }
-        this->leagueGames = new schedule(this->table);
-        this->currentRound = nullptr;
+        this->leagueGames = new schedule(this->table);//setting schedule
     }
 
     void league::addTeams() {
+        // in this function I add enough teams from a file I wrote
         std::fstream file;
         file.open("/home/bravo8234/CLionProjects/Ex6_cpp/teams.txt",std::ios::in);
         if(!file.is_open())
@@ -59,7 +60,7 @@ namespace BBallLeague{
             exit(1);
         }
         std::vector<std::string> names;
-        while(this->table.size() + names.size() < numTeams)
+        while(this->table.size() + names.size() < numTeams)//until enough teams
         {
             std::string name;
             std::getline(file,name);
@@ -73,12 +74,12 @@ namespace BBallLeague{
     }
 
     void league::playNextRound() {
+        //playing the next round of games
         if(this->currentRoundNum >= (this->table.size() -1 ) *2)
         {
             throw std::invalid_argument("league ended, cant play more rounds");
         }
         round* curr = this->leagueGames->getRound(++this->currentRoundNum);
-        this->currentRound = curr;
         for(auto* currGame:curr->getGames())
         {
             currGame->PlayGame();
@@ -90,13 +91,15 @@ namespace BBallLeague{
     }
 
     void league::playLeague() {
-        for(int i = currentRoundNum; i < 2*(numTeams-1);i++)
+        //playing all the rounds left;
+        for(int i =  currentRoundNum; i < 2*(numTeams-1);i++)
         {
             playNextRound();
         }
     }
 
     void league::printRound(int roundNum) {
+        //printing a selected round
         if(roundNum > 2*(this->table.size()-1) || roundNum <=0 )
         {
             throw std::invalid_argument("round num out of range");

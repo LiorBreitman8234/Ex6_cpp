@@ -17,16 +17,6 @@ namespace BBallLeague{
         this->schedule = std::vector<game*>();
     }
 
-    bool team::checkGameExists(game &game) {
-        for(auto* toCheck:this->schedule){
-            if(game.getAway()->getName() == toCheck->getAway()->getName() and game.getHome()->getName() == toCheck->getHome()->getName())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     void team::updateStreak(char sign) {
         if(this->currentStreak.second == sign)
         {

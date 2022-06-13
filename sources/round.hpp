@@ -4,6 +4,7 @@
 #include "game.hpp"
 namespace BBallLeague{
     class round{
+        // this class holds a round of games in the league
         std::vector<game*> games;
         int numRound{};
     public:

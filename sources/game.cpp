@@ -37,21 +37,22 @@ namespace BBallLeague{
     void game::PlayGame() {
         std::random_device rd;
         std::mt19937 gen{rd()};
-        std::normal_distribution<> homeP{mean,std};
+        std::normal_distribution<> homeP{mean,std};//random for points
         std::normal_distribution<> awayP{mean,std};
         int homeS = (int)std::round(homeP(gen));
         int awayS = (int)std::round(awayP(gen));
-        while(homeS < minHome or homeS > maxScore)
+        while(homeS < minHome or homeS > maxScore)//checking limits
         {
             homeS = (int)std::round(homeP(gen));
         }
-        while(awayS < minAway or awayS > maxScore){
+        while(awayS < minAway or awayS > maxScore)//checking limits
+        {
             awayS = (int)std::round(awayP(gen));
         }
         homeS += (int)(this->home->getTalent() * meanOver);
         awayS += (int)(this->away->getTalent() * meanOver);
         int overTimeCounter = 0;
-        while(awayS == homeS)
+        while(awayS == homeS)//overtime
         {
             overTimeCounter++;
             std::normal_distribution<> overTime{meanOver,stdOver};
@@ -66,7 +67,9 @@ namespace BBallLeague{
         {
             this->status = "finished in over time";
         }
+        //updating score
         this->score = std::pair<int,int>(homeS,awayS);
+        //updating streaks
         if(homeS > awayS)
         {
             this->winner = home->getName();

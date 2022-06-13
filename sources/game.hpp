@@ -13,6 +13,7 @@ namespace BBallLeague{
     constexpr int minAway = 50;
     class team;
     class game{
+        // this class holds a single game between 2 teams;
         std::string status;
         team* home;
         team* away;
@@ -20,7 +21,7 @@ namespace BBallLeague{
         std::pair<int,int> score;
     public:
         game(team* home, team* away);
-        void PlayGame();
+        void PlayGame();//plays the game
         team* getHome();
         team* getAway();
         std::string getWinner();

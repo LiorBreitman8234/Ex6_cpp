@@ -2,10 +2,10 @@
 namespace BBallLeague{
 
     bool round::addGame(game* game) {
+        //adding game to the round
         this->games.push_back(game);
         game->getHome()->addGame(game);
         game->getAway()->addGame(game);
-        //std::cout << "added game between: " << game->getHome()->getName() << " and " << game->getAway()->getName() << std::endl;
         return true;
     }
 

@@ -24,10 +24,11 @@ namespace BBallLeague {
         return -1;
     }
     schedule::schedule(const std::vector<team *> &teams) {
-        std::vector<game *> allGames;
+        std::vector<game *> allGames;// to check game validity
         for (int i = 0; i < 2 * (teams.size() - 1); i++) {
             this->rounds.push_back(new round());
         }
+        //adding all the possible games
         for (auto *first: teams) {
             for (auto *second: teams) {
                 if (first->getId() == second->getId()) {
@@ -49,13 +50,14 @@ namespace BBallLeague {
             }
         }
         int counter = 1;
+        //setting games to round and adding round num
         for(auto* curr:rounds)
         {
             curr->setNum(counter++);
-            std::vector<int> chosen(teams.size(),0);
+            std::vector<int> chosen(teams.size(),0);//to check which teams played in this round
             while(!checkChosen(chosen))
             {
-                int firstID = getFirst(chosen);
+                int firstID = getFirst(chosen);//first that didn't play in this round
                 team* team = teams.at(0);
                 for(auto* check:teams)
                 {
@@ -65,14 +67,15 @@ namespace BBallLeague {
                         break;
                     }
                 }
-                std::vector<game*> games =team->getGames();
+                std::vector<game*> games = team->getGames();//getting all the games of the team
                 for(int i = 0; i < games.size() ;i++)
                 {
                     game* game = team->getGames().at((size_t)i);
                     if(game->getHome()->getId() == firstID)
                     {
+                        //curr team is home
                         auto secondID = (size_t)(game->getAway()->getId()-1);
-                        if(chosen.at(secondID) == 0)
+                        if(chosen.at(secondID) == 0)//checking if the second team is also free in the round
                         {
                             curr->addGame(game);
                             chosen.at(secondID) = 1;
@@ -84,8 +87,9 @@ namespace BBallLeague {
                     }
                     else
                     {
+                        // curr team is away
                         auto secondID = (size_t)(game->getHome()->getId()-1);
-                        if(chosen.at(secondID) == 0)
+                        if(chosen.at(secondID) == 0)//checking if the second team is also free in the round
                         {
                             curr->addGame(game);
                             chosen.at(secondID) = 1;
@@ -100,12 +104,13 @@ namespace BBallLeague {
         }
         for(auto* team:teams)
         {
-            team->clearGame();
+            team->clearGame();//clearing the removed games
         }
         for(auto* curr:rounds)
         {
             for(auto* game:curr->getGames())
             {
+                //adding the games by the round order
                 game->getAway()->addGame(game);
                 game->getHome()->addGame(game);
             }
@@ -120,6 +125,7 @@ namespace BBallLeague {
     }
 
     bool schedule::checkValid(int teamsNum) {
+        // this function check if the schedule is valid i.e each team plays once in each round
         for(auto* curr:rounds)
         {
             std::vector<int> check((size_t)teamsNum,0);

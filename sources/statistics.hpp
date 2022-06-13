@@ -7,6 +7,7 @@
 #include "game.hpp"
 namespace BBallLeague{
     class statistics{
+        //this class is used to show different statistic after a league ended
         league* leagueUse;
         std::vector<team*> sortRecord();
         std::vector<std::pair<team*,int>>  sortDiff();

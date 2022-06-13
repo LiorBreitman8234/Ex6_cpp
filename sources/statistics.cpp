@@ -4,6 +4,7 @@
 #include "statistics.hpp"
 namespace BBallLeague{
     std::vector<team*> statistics::sortRecord() {
+        //sorts the team only by record
         std::vector<team *> sorted = this->leagueUse->getTeams();
         for(size_t i = 0; i < sorted.size();i++)
         {
@@ -21,6 +22,7 @@ namespace BBallLeague{
     }
 
     void statistics::top(int num, const std::string& statistic) {
+        // get num of teams and statistic, show the num  best from this statistic
         if(num > this->leagueUse->getTeams().size())
         {
             throw std::invalid_argument("num bigger then amount of teams");
@@ -106,6 +108,7 @@ namespace BBallLeague{
     }
 
     std::vector<std::pair<team*,int>>  statistics::sortDiff() {
+        //sorts the team by amount of points scored - amount of points recevied
         std::vector<std::pair<int,int>> sumPoints;
         std::vector<team*> teams = this->leagueUse->getTeams();
         sumPoints.reserve(teams.size());
@@ -148,6 +151,8 @@ namespace BBallLeague{
     }
 
     void statistics::showTable() {
+        // show the end table of the league
+        //first sorted by record, tiebreaker is diff
         std::vector<team*> sortedRecord = this->sortRecord();
         std::vector<std::pair<team*,int>> sortedDiff = this->sortDiff();
         std::vector<team*> beforeLastSort = sortedRecord;
@@ -202,6 +207,7 @@ namespace BBallLeague{
     }
 
     void statistics::longestStreak(char type) {
+        //shows the longest streak of wins or loses
         if(type != 'W' && type != 'L')
         {
             throw std::invalid_argument("wrong streak type");
@@ -256,6 +262,7 @@ namespace BBallLeague{
     }
 
     void statistics::scoredMore() {
+        //checks how many team scored more than they recieved
         int count = 0;
         std::vector<std::pair<team*,int>> sorted = sortDiff();
         for(auto pair:sorted)
@@ -282,6 +289,7 @@ namespace BBallLeague{
     }
 
     std::vector<std::pair<team *, int>> statistics::sortScored() {
+        //sorts the teams by points scored
         std::vector<team*> teams = this->leagueUse->getTeams();
         std::vector<std::pair<team*,int>> sort;
         for(auto* currTeam:teams)
@@ -317,6 +325,7 @@ namespace BBallLeague{
     }
 
     std::vector<std::pair<team *, int>> statistics::sortReceived() {
+        //sorts the teams by points recevied
         std::vector<team*> teams = this->leagueUse->getTeams();
         std::vector<std::pair<team*,int>> sort;
         for(auto* currTeam:teams)
@@ -348,6 +357,7 @@ namespace BBallLeague{
     }
 
     std::vector<std::pair<team *, int>> statistics::sortHomeWins() {
+        //sort by home wins
         std::vector<team*> teams = this->leagueUse->getTeams();
         std::vector<std::pair<team*,int>> sort;
         for(auto* currTeam:teams)
@@ -378,6 +388,7 @@ namespace BBallLeague{
     }
 
     std::vector<std::pair<team *, int>> statistics::sortAwayWins() {
+        //sort by away wins
         std::vector<team*> teams = this->leagueUse->getTeams();
         std::vector<std::pair<team*,int>> sort;
         for(auto* currTeam:teams)
