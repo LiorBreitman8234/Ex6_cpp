@@ -25,7 +25,8 @@ namespace BBallLeague{
         {
             throw std::invalid_argument("num bigger then amount of teams");
         }
-        else if(statistic == "record")
+        std::cout << "showing " << num << " top teams according to " << statistic << " stat" << std::endl;
+        if(statistic == "record")
         {
             std::vector<team*> sorted =this->sortRecord();
             for(size_t i =0; i < num;i++)
@@ -201,6 +202,10 @@ namespace BBallLeague{
     }
 
     void statistics::longestStreak(char type) {
+        if(type != 'W' && type != 'L')
+        {
+            throw std::invalid_argument("wrong streak type");
+        }
         int longest = 0;
         for(auto* team:this->leagueUse->getTeams())
         {

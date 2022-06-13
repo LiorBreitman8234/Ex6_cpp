@@ -81,4 +81,17 @@ namespace BBallLeague{
         this->schedule = std::vector<game*>();
     }
 
+    void team::showSchedule() {
+        std::cout << "schedule for: " << this->name << std::endl;
+        for(auto* game: this->schedule)
+        {
+            std::cout << (*game) << std::endl;
+        }
+        std::cout << "current record: " << this->record.first << "W - " << this->record.second << "L" << std::endl;
+    }
+
+    void team::showRecord() {
+        std::cout << this->name <<" record: " << this->record.first << "W - " << this->record.second << "L" << std::endl;
+    }
+
 }

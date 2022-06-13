@@ -26,6 +26,8 @@ namespace BBallLeague{
         void updateRecord(char sign);
         void clearGame(){this->schedule.clear();};
         void eraseGame(game* toRemove);
+        void showSchedule();
+        void showRecord();
         bool checkGameExists(game& game);
         std::pair<int,int> getScore(){return this->record;};
         std::vector<game*> getGames(){return this->schedule;};

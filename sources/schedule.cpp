@@ -113,6 +113,10 @@ namespace BBallLeague {
         if(checkValid((int)teams.size())){
             std::cout << "schedule is valid!" << std::endl;
         }
+        else
+        {
+            throw std::logic_error("invalid schedule");
+        }
     }
 
     bool schedule::checkValid(int teamsNum) {

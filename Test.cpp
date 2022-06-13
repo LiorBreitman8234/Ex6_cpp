@@ -5,13 +5,19 @@
 #include "sources/league.hpp"
 #include "sources/statistics.hpp"
 #include "sources/team.hpp"
-TEST_CASE("good league, all my teams")
+TEST_CASE("good league, all my teams, play league using some round and then rest of league")
 {
     BBallLeague::league* good;
     CHECK_NOTHROW(good = new BBallLeague::league());
     BBallLeague::statistics* stat;
     CHECK_THROWS(stat = new BBallLeague::statistics(good));
     CHECK_THROWS_MESSAGE(stat = new BBallLeague::statistics(good),"league didnt finish yet");
+    for(int i =0; i < 5;i++)
+    {
+        CHECK_NOTHROW(good->playNextRound());
+    }
+    CHECK_THROWS(good->printRound(40));
+    CHECK_THROWS(good->printRound(-1));
     CHECK_NOTHROW(good->playLeague());
     CHECK_EQ(good->getCurrRoundNum(), 2*(good->getTeams().size()-1));
     CHECK_NOTHROW(stat = new BBallLeague::statistics(good));
@@ -22,7 +28,9 @@ TEST_CASE("good league, all my teams")
     CHECK_THROWS(stat->top(15,"difference"));
     CHECK_THROWS_MESSAGE(stat->top(15,"difference"),"no such statistic");
     CHECK_NOTHROW(stat->showTable());
-    CHECK_NOTHROW(stat->top(10,"scored"));
+    CHECK_NOTHROW(stat->top(10,"record"));
+    CHECK_NOTHROW(stat->top(10,"diff"));
+
 }
 TEST_CASE("Bad league initializing")
 {
@@ -43,7 +51,7 @@ TEST_CASE("Bad league initializing")
     CHECK_THROWS(bad = new BBallLeague::league(test1));
     CHECK_THROWS_MESSAGE(bad = new BBallLeague::league(test1),"too many teams");
 }
-TEST_CASE("good league, other teams")
+TEST_CASE("good league, other teams, playing all the league at once")
 {
     auto * team1 = new BBallLeague::team("golden state warriors",0.95);
     auto * team2 = new BBallLeague::team("boston celtics",0.95);
@@ -96,15 +104,16 @@ TEST_CASE("good league, other teams")
     CHECK_NOTHROW(stat = new BBallLeague::statistics(other));
     CHECK_THROWS(other->playNextRound());
     CHECK_THROWS_MESSAGE(other->playNextRound(),"league ended, cant play more rounds");
-    CHECK_THROWS(stat->top(25,"record"));
-    CHECK_THROWS_MESSAGE(stat->top(25,"record"),"num bigger then amount of teams");
-    CHECK_THROWS(stat->top(15,"difference"));
-    CHECK_THROWS_MESSAGE(stat->top(15,"difference"),"no such statistic");
+    CHECK_NOTHROW(stat->longestStreak('W'));
+    CHECK_NOTHROW(stat->longestStreak('L'));
+    CHECK_THROWS(stat->longestStreak('D'));
     CHECK_NOTHROW(stat->showTable());
-    CHECK_NOTHROW(stat->top(10,"record"));
+    CHECK_NOTHROW(stat->top(10,"scored"));
+    CHECK_NOTHROW(stat->top(10,"received"));
+
 }
 
-TEST_CASE("good league, some teams mine some other")
+TEST_CASE("good league, some teams mine some other, playing all the league through rounds, showing mid season stats")
 {
     auto * team1 = new BBallLeague::team("golden state warriors",0.95);
     auto * team2 = new BBallLeague::team("boston celtics",0.95);
@@ -132,15 +141,45 @@ TEST_CASE("good league, some teams mine some other")
     BBallLeague::statistics* stat;
     CHECK_THROWS(stat = new BBallLeague::statistics(someSome));
     CHECK_THROWS_MESSAGE(stat = new BBallLeague::statistics(someSome),"league didnt finish yet");
-    CHECK_NOTHROW(someSome->playLeague());
+    for(int i = 0; i < 2*(someSome->getTeams().size()-1);i++)
+    {
+        CHECK_NOTHROW(someSome->playNextRound());
+        if(i == 9 || i == 19 || i == 29)
+        {
+            for(auto* team:someSome->getTeams())
+            {
+                team->showRecord();
+            }
+            std::cout << std::endl;
+        }
+    }
     CHECK_EQ(someSome->getCurrRoundNum(), 2*(someSome->getTeams().size()-1));
     CHECK_NOTHROW(stat = new BBallLeague::statistics(someSome));
     CHECK_THROWS(someSome->playNextRound());
     CHECK_THROWS_MESSAGE(someSome->playNextRound(),"league ended, cant play more rounds");
-    CHECK_THROWS(stat->top(25,"record"));
-    CHECK_THROWS_MESSAGE(stat->top(25,"record"),"num bigger then amount of teams");
-    CHECK_THROWS(stat->top(15,"difference"));
-    CHECK_THROWS_MESSAGE(stat->top(15,"difference"),"no such statistic");
     CHECK_NOTHROW(stat->showTable());
     CHECK_NOTHROW(stat->homeAwayDiff());
+    CHECK_NOTHROW(stat->top(10,"home"));
+    CHECK_NOTHROW(stat->top(10,"away"));
+}
+TEST_CASE("good league, show schedule")
+{
+    auto * team1 = new BBallLeague::team("golden state warriors",0.95);
+    std::vector<BBallLeague::team*> teams;
+    teams.push_back(team1);
+    BBallLeague::league* other;
+    CHECK_NOTHROW(other = new BBallLeague::league(teams));
+
+    std::cerr << "no matches played" << std::endl;
+    CHECK_NOTHROW(team1->showSchedule());
+
+    std::cerr << "one match played" << std::endl;
+    CHECK_NOTHROW(other->playNextRound());
+    CHECK_NOTHROW(team1->showSchedule());
+
+    std::cerr << "all matches played" << std::endl;
+    CHECK_NOTHROW(other->playLeague());
+    CHECK_NOTHROW(team1->showSchedule());
+
+
 }

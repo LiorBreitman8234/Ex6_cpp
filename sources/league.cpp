@@ -83,7 +83,6 @@ namespace BBallLeague{
         {
             currGame->PlayGame();
         }
-        //std::cout << (*curr) << std::endl;
     }
 
     void league::printLastRound() {
@@ -98,6 +97,10 @@ namespace BBallLeague{
     }
 
     void league::printRound(int roundNum) {
+        if(roundNum > 2*(this->table.size()-1) || roundNum <=0 )
+        {
+            throw std::invalid_argument("round num out of range");
+        }
         round* round = this->leagueGames->getRound(roundNum);
         std::cout << (*round) << std::endl;
     }
